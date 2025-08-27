@@ -1,7 +1,8 @@
 Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
-Backend Setup,Initialize project with Express.js and Typescript,0.5,1,,
-Backend Setup,Set up project structure and configure TypeScript,0.5,1,,
-Backend Setup,"Install dependencies (Express, JWT, Swagger, etc.)",0.5,1,,
+Backend Setup,Initialize project with Express.js and Typescript,0.5,1,0.1,
+Backend Setup,Set up project structure and configure TypeScript,0.5,1,0.1,
+Backend Setup,"Install dependencies (Express, JWT, Swagger, etc.)",0.5,1,0.3,Initial setup (including above) done in 30 mins
+Backend Setup,"root endpoint, swagger endpoint, basic test",0.5,1,0.5,This is a new task, added for better tracking
 DevOps,Dockerfile setup for backend and frontend,1,1.5,,
 DevOps,Docker-compose for app + database,1,1.5,,
 User Auth & Models,Design User and Task models/schema,1,2,,
