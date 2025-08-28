@@ -1,5 +1,6 @@
-import { db, client } from '../db.js';
-import { users, tasks } from '../models/schema.js';
+import { db, client } from '../db';
+import { users, tasks } from '../models/schema';
+import bcrypt from 'bcryptjs';
 
 async function seed() {
   console.log('🌱 Seeding database...');
@@ -11,13 +12,19 @@ async function seed() {
     let insertedUsers = existingUsers;
     
     if (existingUsers.length === 0) {
+      // Hash passwords for seed users
+      const adminPassword = await bcrypt.hash('admin123', 12);
+      const developerPassword = await bcrypt.hash('dev123', 12);
+      const designerPassword = await bcrypt.hash('design123', 12);
+      
       // Insert users only if none exist
       insertedUsers = await db.insert(users).values([
-        { username: 'admin', isAdmin: true },
-        { username: 'developer', isAdmin: false },
-        { username: 'designer', isAdmin: false },
+        { username: 'admin', password: adminPassword, isAdmin: true },
+        { username: 'developer', password: developerPassword, isAdmin: false },
+        { username: 'designer', password: designerPassword, isAdmin: false },
       ]).returning();
       console.log('✅ Users seeded:', insertedUsers.length);
+      console.log('ℹ️  Default passwords: admin123, dev123, design123');
     } else {
       console.log('ℹ️  Users already exist, skipping user creation');
     }

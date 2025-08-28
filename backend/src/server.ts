@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import authRouter from './routes/auth';
+import usersRouter from './routes/users';
+import tasksRouter from './routes/tasks';
 
 dotenv.config();
 
@@ -20,6 +23,15 @@ const swaggerOptions = {
     servers: [
       { url: 'http://localhost:3000' }
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   apis: ['./src/routes/*.ts', './src/models/*.ts'], // Files containing Swagger annotations
 };
@@ -31,6 +43,11 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+// API Routes
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/tasks', tasksRouter);
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('SprintSync backend is running');

@@ -8,6 +8,7 @@ export const taskStatusEnum = pgEnum('task_status', ['todo', 'in_progress', 'don
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   username: varchar('username', { length: 50 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
   isAdmin: boolean('is_admin').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });

@@ -24,9 +24,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: sprintsync-backend
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=production
-      - PORT=3000
       - DATABASE_URL=postgresql://sprintsync_user:sprintsync_pass@database:5432/sprintsync
     ports:
       - "3000:3000"

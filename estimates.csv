@@ -2,11 +2,11 @@ Story,Task,Estimate min (hr),Estimate max (hr),Actual,Comment
 Backend Setup,Initialize project with Express.js and Typescript,0.5,1,0.1,
 Backend Setup,Set up project structure and configure TypeScript,0.5,1,0.1,
 Backend Setup,"Install dependencies (Express, JWT, Swagger, etc.)",0.5,1,0.3,Initial setup (including above) done in 30 mins
-Backend Setup,"root endpoint, swagger endpoint, basic test",0.5,1,0.5,This is a new task, added for better tracking
+Backend Setup,"root endpoint, swagger endpoint, basic test",0.5,1,0.5,This is a new task added for better tracking
 DevOps,Dockerfile setup for backend and frontend,1,1.5,0.5,Basic dockerfile
 DevOps,Docker-compose for app + database,1,1.5,1,Docker-compose and utility docker.sh script + database initialized
-User Auth & Models,Design User and Task models/schema,1,2,2,Initial setup done, included drizzle ORM and updated seeding script
-User Auth & Models,Implement User CRUD + auth endpoints (JWT/cookie),2,4,,
+User Auth & Models,Design User and Task models/schema,1,2,2,Initial setup done included drizzle ORM and updated seeding script
+User Auth & Models,Implement User CRUD + auth endpoints (JWT/cookie),2,4,5,completed and added extensive tests, some issues with docker
 Frontend Setup,Initialize React SPA with Typescript with minimal scaffolding,1,2,,
 Frontend Setup,"Set up folder structure, router, state management (basic)",1,1.5,,
 User Auth & Models,Connect models to chosen database and seed data,2,3,,
