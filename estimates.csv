@@ -6,11 +6,11 @@ Backend Setup,"root endpoint, swagger endpoint, basic test",0.5,1,0.5,This is a 
 DevOps,Dockerfile setup for backend and frontend,1,1.5,0.5,Basic dockerfile
 DevOps,Docker-compose for app + database,1,1.5,1,Docker-compose and utility docker.sh script + database initialized
 User Auth & Models,Design User and Task models/schema,1,2,2,Initial setup done included drizzle ORM and updated seeding script
-User Auth & Models,Implement User CRUD + auth endpoints (JWT/cookie),2,4,5,completed and added extensive tests, some issues with docker
+User Auth & Models,Implement User CRUD + auth endpoints (JWT/cookie),2,4,5,completed and added extensive tests some issues with docker
+User Auth & Models,Connect models to chosen database and seed data,2,3,0.5,mostly done as part of above steps
+User Auth & Models,Add Swagger API documentation,1,2,0.5,extensively used AI to generate docs
 Frontend Setup,Initialize React SPA with Typescript with minimal scaffolding,1,2,,
 Frontend Setup,"Set up folder structure, router, state management (basic)",1,1.5,,
-User Auth & Models,Connect models to chosen database and seed data,2,3,,
-User Auth & Models,Add Swagger API documentation,1,2,,
 Frontend Task Management,Basic task list view with inline status change minimal UI,2,3,,
 Observability,"Implement structured logging middleware (method, path, userId, latency)",1.5,2,,
 Observability,Log errors with stack traces,1,1.5,,
