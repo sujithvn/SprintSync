@@ -11,13 +11,19 @@ export class AuthController {
       const { username, password, isAdmin = false } = req.body;
 
       if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Username and password are required' 
+        });
       }
 
       // Check if user already exists
       const existingUser = await db.select().from(users).where(eq(users.username, username));
       if (existingUser.length > 0) {
-        return res.status(409).json({ error: 'Username already exists' });
+        return res.status(409).json({ 
+          success: false, 
+          message: 'Username already exists' 
+        });
       }
 
       // Hash password
@@ -37,7 +43,10 @@ export class AuthController {
       });
 
       if (!newUser[0]) {
-        return res.status(500).json({ error: 'Failed to create user' });
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Failed to create user' 
+        });
       }
 
       // Generate token
@@ -48,17 +57,23 @@ export class AuthController {
       });
 
       return res.status(201).json({
-        token,
-        user: {
-          id: newUser[0].id,
-          username: newUser[0].username,
-          isAdmin: newUser[0].isAdmin
+        success: true,
+        data: {
+          token,
+          user: {
+            id: newUser[0].id,
+            username: newUser[0].username,
+            isAdmin: newUser[0].isAdmin
+          }
         }
       });
 
     } catch (error) {
       console.error('Error registering user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error' 
+      });
     }
   }
 
@@ -67,19 +82,28 @@ export class AuthController {
       const { username, password } = req.body;
 
       if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Username and password are required' 
+        });
       }
 
       // Find user
       const user = await db.select().from(users).where(eq(users.username, username));
       if (user.length === 0 || !user[0]) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Invalid credentials' 
+        });
       }
 
       // Verify password
       const isPasswordValid = await bcrypt.compare(password, user[0].password);
       if (!isPasswordValid) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Invalid credentials' 
+        });
       }
 
       // Generate token
@@ -90,17 +114,23 @@ export class AuthController {
       });
 
       return res.json({
-        token,
-        user: {
-          id: user[0].id,
-          username: user[0].username,
-          isAdmin: user[0].isAdmin
+        success: true,
+        data: {
+          token,
+          user: {
+            id: user[0].id,
+            username: user[0].username,
+            isAdmin: user[0].isAdmin
+          }
         }
       });
 
     } catch (error) {
       console.error('Error logging in user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error' 
+      });
     }
   }
 
@@ -110,7 +140,10 @@ export class AuthController {
       const token = authHeader && authHeader.split(' ')[1];
 
       if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
+        return res.status(401).json({ 
+          success: false, 
+          message: 'Access token required' 
+        });
       }
 
       const { verifyToken } = await import('../utils/jwt');
@@ -125,16 +158,40 @@ export class AuthController {
       }).from(users).where(eq(users.id, payload.userId));
 
       if (user.length === 0) {
-        return res.status(401).json({ error: 'User not found' });
+        return res.status(401).json({ 
+          success: false, 
+          message: 'User not found' 
+        });
       }
 
       return res.json({
-        user: user[0]
+        success: true,
+        data: user[0]
       });
 
     } catch (error) {
       console.error('Error verifying token:', error);
-      return res.status(401).json({ error: 'Invalid or expired token' });
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Invalid or expired token' 
+      });
+    }
+  }
+
+  static async logout(_req: Request, res: Response) {
+    try {
+      // Since we're using stateless JWT tokens, logout is handled client-side
+      // by removing the token from storage. We just return a success response.
+      return res.json({
+        success: true,
+        message: 'Logged out successfully'
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Internal server error' 
+      });
     }
   }
 }

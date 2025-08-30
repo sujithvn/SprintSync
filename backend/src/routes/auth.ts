@@ -98,6 +98,27 @@ router.post('/login', AuthController.login);
 
 /**
  * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout user
+ *     tags: [Authentication]
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
+router.post('/logout', AuthController.logout);
+
+/**
+ * @swagger
  * /api/auth/verify:
  *   get:
  *     summary: Verify token and get current user
