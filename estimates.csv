@@ -9,9 +9,9 @@ User Auth & Models,Design User and Task models/schema,1,2,2,Initial setup done i
 User Auth & Models,Implement User CRUD + auth endpoints (JWT/cookie),2,4,5,completed and added extensive tests some issues with docker
 User Auth & Models,Connect models to chosen database and seed data,2,3,0.5,mostly done as part of above steps
 User Auth & Models,Add Swagger API documentation,1,2,0.5,extensively used AI to generate docs
-Frontend Setup,Initialize React SPA with Typescript with minimal scaffolding,1,2,,
-Frontend Setup,"Set up folder structure, router, state management (basic)",1,1.5,,
-Frontend Task Management,Basic task list view with inline status change minimal UI,2,3,,
+Frontend Setup,Initialize React SPA with Typescript with minimal scaffolding,1,2,0.5,only basic setup
+Frontend Setup,"Set up folder structure, router, state management (basic)",1,1.5,1,basic setup
+Frontend Task Management,Basic task list view with inline status change minimal UI,2,3,2,"basic task list, some adjustments in backend response"
 Observability,"Implement structured logging middleware (method, path, userId, latency)",1.5,2,,
 Observability,Log errors with stack traces,1,1.5,,
 AI-Assist Endpoint,Design prompt/response schema for /ai/suggest,1,1.5,,
