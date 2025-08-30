@@ -6,6 +6,7 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import authRouter from './routes/auth';
 import usersRouter from './routes/users';
 import tasksRouter from './routes/tasks';
+import aiRouter from './routes/ai';
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/tasks', tasksRouter);
+app.use('/api/ai', aiRouter);
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('SprintSync backend is running');

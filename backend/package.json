@@ -25,6 +25,7 @@
     "drizzle-orm": "^0.44.5",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "openai": "^4.104.0",
     "postgres": "^3.4.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
