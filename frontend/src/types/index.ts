@@ -20,6 +20,18 @@ export interface Task {
   updatedAt: string;
 }
 
+export interface AiSuggestRequest {
+  title: string;
+  context?: string; // Optional additional context
+}
+
+export interface AiSuggestResponse {
+  suggestedDescription: string;
+  estimatedMinutes: number;
+  suggestedTags?: string[];
+  confidence: number; // 0-1 scale
+}
+
 export interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;

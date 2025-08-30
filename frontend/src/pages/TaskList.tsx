@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Task } from '@/types';
 import { taskApi } from '@/services/api';
+import AiSuggest from '@/components/AiSuggest';
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAiAssist, setShowAiAssist] = useState(false);
 
   useEffect(() => {
     loadTasks();
@@ -14,9 +16,7 @@ const TaskList: React.FC = () => {
   const loadTasks = async () => {
     try {
       setLoading(true);
-      console.log('Loading tasks...'); // Debug log
       const response = await taskApi.getTasks();
-      console.log('Retrieving tasks from API...', response);
       if (response.success && response.data) {
         setTasks(response.data);
       }
@@ -50,13 +50,39 @@ const TaskList: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Tasks</h2>
-        <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-md text-sm font-medium transition-colors">
-          Add Task
-        </button>
+    <div className="space-y-6">
+      {/* AI Assistant Section */}
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">AI Task Assistant</h2>
+          <button 
+            onClick={() => setShowAiAssist(!showAiAssist)}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2"
+          >
+            <span>{showAiAssist ? '🤖' : '✨'}</span>
+            {showAiAssist ? 'Hide AI Assistant' : 'Get AI Help'}
+          </button>
+        </div>
+        
+        {showAiAssist && (
+          <AiSuggest 
+            onSuggestionAccepted={(suggestion) => {
+              console.log('AI Suggestion accepted:', suggestion);
+              // TODO: Use this to pre-fill task creation form
+              alert(`AI Suggestion accepted!\nDescription: ${suggestion.suggestedDescription}\nEstimated time: ${suggestion.estimatedMinutes} minutes`);
+            }}
+          />
+        )}
       </div>
+
+      {/* Tasks Section */}
+      <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Tasks</h2>
+          <button className="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-md text-sm font-medium transition-colors">
+            Add Task
+          </button>
+        </div>
       
       <div className="space-y-4">
         {tasks.length === 0 ? (
@@ -88,6 +114,7 @@ const TaskList: React.FC = () => {
           ))
         )}
       </div>
+    </div>
     </div>
   );
 };

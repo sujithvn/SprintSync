@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User, Task, ApiResponse, AuthLoginResponse } from '@/types';
+import { User, Task, ApiResponse, AuthLoginResponse, AiSuggestRequest, AiSuggestResponse } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -128,6 +128,14 @@ export const taskApi = {
 
   deleteTask: async (id: number): Promise<ApiResponse<null>> => {
     const response = await api.delete(`/api/tasks/${id}`);
+    return response.data;
+  },
+};
+
+// AI endpoints
+export const aiApi = {
+  suggestTaskDescription: async (request: AiSuggestRequest): Promise<ApiResponse<AiSuggestResponse>> => {
+    const response = await api.post('/api/ai/suggest', request);
     return response.data;
   },
 };
