@@ -7,6 +7,7 @@ import authRouter from './routes/auth';
 import usersRouter from './routes/users';
 import tasksRouter from './routes/tasks';
 import aiRouter from './routes/ai';
+import { requestLoggingMiddleware, errorLoggingMiddleware, Logger } from './middlewares/logging';
 
 dotenv.config();
 
@@ -50,6 +51,9 @@ app.use(cors({
 
 app.use(express.json());
 
+// Logging middleware - must come early to capture all requests
+app.use(requestLoggingMiddleware);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // API Routes
@@ -61,5 +65,8 @@ app.use('/api/ai', aiRouter);
 app.get('/', (_req: Request, res: Response) => {
   res.send('SprintSync backend is running');
 });
+
+// Error logging middleware - must come after routes
+app.use(errorLoggingMiddleware);
 
 export default app;

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { db } from '../db';
 import { tasks, users } from '../models/schema';
 import { eq } from 'drizzle-orm';
+import { Logger } from '../middlewares/logging';
 
 export class TaskController {
   static async getAllTasks(req: Request, res: Response) {
@@ -22,7 +23,15 @@ export class TaskController {
         });
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      Logger.error({
+        method: 'GET',
+        path: '/api/tasks',
+        userId: req.user?.userId || undefined,
+        userName: req.user?.username || undefined,
+        ip: req.ip || 'unknown',
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorStack: error instanceof Error ? error.stack : undefined
+      });
       return res.status(500).json({ 
         success: false,
         error: 'Internal server error' 
@@ -130,7 +139,16 @@ export class TaskController {
         data: newTask[0],
       });
     } catch (error) {
-      console.error('Error creating task:', error);
+      Logger.error({
+        method: 'POST',
+        path: '/api/tasks',
+        userId: req.user?.userId || undefined,
+        userName: req.user?.username || undefined,
+        ip: req.ip || 'unknown',
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorStack: error instanceof Error ? error.stack : undefined,
+        requestBody: { title: req.body?.title, hasDescription: !!req.body?.description }
+      });
       return res.status(500).json({ success: false, error: 'Internal server error' });
     }
   }

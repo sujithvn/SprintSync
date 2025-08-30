@@ -20,8 +20,8 @@ User Auth & Models,Implement Task CRUD and status transitions,2,4,0,already comp
 Frontend Task Management,Form/modal for create & edit task,2,3,2.5,create/edit/AI-assisted modes + bugfix totalMinutes
 Integration,Connect frontend to backend APIs for basic user & tasks,2,3,0,already complete
 Frontend Task Management,Basic responsive styling and UI polish,1.5,2,0,already complete
-Observability,"Implement structured logging middleware (method, path, userId, latency)",1.5,2,,
-Observability,Log errors with stack traces,1,1.5,,
+Observability,"Implement structured logging middleware (method, path, userId, latency)",1.5,2,2.5,implemented logging and experimented with Loki/Grafana
+Observability,Log errors with stack traces,1,1.5,0,done as part of above task
 DevOps,Deploy to cloud (AWS),2,3,,
 Documentation,"Write README with setup, tech choices, and live URL (incremental)",1,2,,
 Demo,Populate demo data and prepare system for review,1,1.5,,
