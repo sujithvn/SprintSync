@@ -3,7 +3,7 @@ import { AiSuggestRequest, AiSuggestResponse } from '@/types';
 import { aiApi } from '@/services/api';
 
 interface AiSuggestProps {
-  onSuggestionAccepted?: (suggestion: AiSuggestResponse) => void;
+  onSuggestionAccepted?: (suggestion: AiSuggestResponse & { originalTitle: string }) => void;
   initialTitle?: string;
 }
 
@@ -46,7 +46,10 @@ const AiSuggest: React.FC<AiSuggestProps> = ({ onSuggestionAccepted, initialTitl
 
   const handleAcceptSuggestion = () => {
     if (suggestion && onSuggestionAccepted) {
-      onSuggestionAccepted(suggestion);
+      onSuggestionAccepted({
+        ...suggestion,
+        originalTitle: title.trim()
+      });
     }
   };
 
@@ -172,12 +175,17 @@ const AiSuggest: React.FC<AiSuggestProps> = ({ onSuggestionAccepted, initialTitl
             </div>
 
             {onSuggestionAccepted && (
-              <button
-                onClick={handleAcceptSuggestion}
-                className="mt-3 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
-              >
-                Accept Suggestion
-              </button>
+              <div className="mt-3 space-y-2">
+                <button
+                  onClick={handleAcceptSuggestion}
+                  className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
+                >
+                  Accept Suggestion
+                </button>
+                <p className="text-xs text-gray-500 italic">
+                  💡 Tip: Not satisfied? Update the title or context above and generate a new suggestion!
+                </p>
+              </div>
             )}
           </div>
         </div>

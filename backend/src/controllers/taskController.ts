@@ -68,12 +68,28 @@ export class TaskController {
 
   static async createTask(req: Request, res: Response) {
     try {
-      const { title, description, status = 'todo', userId } = req.body;
+      const { title, description, status, totalMinutes, userId } = req.body;
+      
+      // Set defaults and convert types explicitly
+      const taskData = {
+        title: title?.trim(),
+        description: description?.trim() || '',
+        status: status || 'todo',
+        totalMinutes: totalMinutes !== undefined ? parseInt(totalMinutes, 10) : 0,
+      };
 
-      if (!title) {
+      if (!taskData.title) {
         return res.status(400).json({ 
           success: false,
           error: 'Title is required' 
+        });
+      }
+
+      // Validate totalMinutes if provided
+      if (taskData.totalMinutes && (isNaN(taskData.totalMinutes) || taskData.totalMinutes < 0)) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'Total minutes must be a valid positive number' 
         });
       }
 
@@ -95,9 +111,10 @@ export class TaskController {
       }
 
       const newTask = await db.insert(tasks).values({
-        title,
-        description,
-        status,
+        title: taskData.title,
+        description: taskData.description,
+        status: taskData.status,
+        totalMinutes: taskData.totalMinutes,
         userId: assignedUserId,
       }).returning();
 
