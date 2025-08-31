@@ -73,6 +73,15 @@ app.use('/api/users', usersRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/ai', aiRouter);
 
+// Health check endpoint for App Runner
+app.get('/health', (_req: Request, res: Response) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    service: 'SprintSync Backend'
+  });
+});
+
 app.get('/', (_req: Request, res: Response) => {
   res.send('SprintSync backend is running');
 });

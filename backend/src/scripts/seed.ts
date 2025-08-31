@@ -79,7 +79,9 @@ async function seed() {
     process.exit(1);
   } finally {
     // Close the database connection to allow the process to exit
-    await client.end();
+    if (client) {
+      await client.end();
+    }
   }
 }
 

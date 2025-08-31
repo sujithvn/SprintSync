@@ -3,10 +3,19 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Initialize OpenAI client lazily
+let openai: OpenAI | null = null;
+
+function getOpenAI(): OpenAI {
+  if (!openai) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY not found in environment variables');
+    }
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+}
 
 interface AiSuggestResponse {
   suggestedDescription: string;
@@ -35,7 +44,8 @@ export class OpenAIService {
 
       const prompt = this.buildPrompt(title, context);
       
-      const completion = await openai.chat.completions.create({
+      const openaiClient = getOpenAI();
+      const completion = await openaiClient.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
