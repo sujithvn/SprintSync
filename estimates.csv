@@ -23,9 +23,9 @@ Frontend Task Management,Basic responsive styling and UI polish,1.5,2,0,already 
 Observability,"Implement structured logging middleware (method, path, userId, latency)",1.5,2,2.5,implemented logging and experimented with Loki/Grafana
 Observability,Log errors with stack traces,1,1.5,0,done as part of above task
 DevOps,Deploy to cloud (AWS),2,3,5,multiple issues encountered during deployment
-Documentation,"Write README with setup, tech choices, and live URL (incremental)",1,2,,
+Documentation,"Write README with setup, tech choices, and live URL (incremental)",1,2,1,with AI support
 Demo,Populate demo data and prepare system for review,1,1.5,,
 Stretch,top-users endpoint,1,2,0.5,mostly done with AI
 Stretch,Admin Dashboard to list top-users,1,2,0.5,mostly done with AI
 Stretch,Admin assign tasks to users,1,2,0.5,mostly done with AI
-Stretch,Auto-assign tasks to users based on resume and task description,2,4,,
+Stretch,Auto-assign tasks to users based on resume and task description,2,4,2,with AI support
