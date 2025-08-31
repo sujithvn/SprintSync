@@ -7,6 +7,7 @@ import authRouter from './routes/auth';
 import usersRouter from './routes/users';
 import tasksRouter from './routes/tasks';
 import aiRouter from './routes/ai';
+import statsRouter from './routes/stats';
 import { requestLoggingMiddleware, errorLoggingMiddleware } from './middlewares/logging';
 
 dotenv.config();
@@ -72,6 +73,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/stats', statsRouter);
 
 // Health check endpoint for App Runner
 app.get('/health', (_req: Request, res: Response) => {

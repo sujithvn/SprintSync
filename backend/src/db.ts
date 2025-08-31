@@ -17,14 +17,18 @@ function createDbConnection() {
   console.log('- Using localhost fallback:', connectionString.includes('localhost'));
 
   // Create postgres client with connection timeout settings
+  const sslConfig = process.env.NODE_ENV === 'production' ? {
+    ssl: {
+      rejectUnauthorized: false, // For RDS, we trust AWS certificates
+    }
+  } : {}; // No SSL for local development
+
   client = postgres(connectionString, {
     connect_timeout: 30, // 30 seconds
     idle_timeout: 30,
     max_lifetime: 60 * 30, // 30 minutes
     max: 20, // max connections
-    ssl: {
-      rejectUnauthorized: false, // For RDS, we trust AWS certificates
-    },
+    ...sslConfig,
     onnotice: (notice) => console.log('PostgreSQL notice:', notice),
     debug: process.env.NODE_ENV === 'production' ? false : true,
   });

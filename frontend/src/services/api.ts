@@ -140,4 +140,17 @@ export const aiApi = {
   },
 };
 
+// Stats endpoints
+export const statsApi = {
+  getTopUsers: async () => {
+    const response = await api.get('/api/stats/top-users');
+    return response.data;
+  },
+  
+  getPlatformStats: async () => {
+    const response = await api.get('/api/stats/platform');
+    return response.data;
+  },
+};
+
 export default api;
