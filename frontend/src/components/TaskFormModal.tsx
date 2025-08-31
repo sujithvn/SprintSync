@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Task, AiSuggestResponse } from '@/types';
+import { Task, AiSuggestResponse, User } from '@/types';
+import { useAuth } from '@/components/AuthContext';
+import { userApi } from '@/services/api';
 
 interface TaskFormModalProps {
   isOpen: boolean;
@@ -18,14 +20,18 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
   aiSuggestion,
   mode
 }) => {
+  const { user: currentUser } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     totalMinutes: 0,
-    status: 'todo' as Task['status']
+    status: 'todo' as Task['status'],
+    userId: currentUser?.id || 0
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableUsers, setAvailableUsers] = useState<User[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   // Initialize form data based on mode
   useEffect(() => {
@@ -37,7 +43,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
         title: task.title,
         description: task.description,
         totalMinutes: task.totalMinutes,
-        status: task.status
+        status: task.status,
+        userId: task.userId || currentUser?.id || 0
       });
     } else if (mode === 'ai-assisted' && aiSuggestion) {
       // AI-assisted mode - populate with AI suggestion
@@ -45,20 +52,43 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
         title: aiSuggestion.originalTitle || '',
         description: aiSuggestion.suggestedDescription || '',
         totalMinutes: Number(aiSuggestion.estimatedMinutes) || 0,
-        status: 'todo'
+        status: 'todo',
+        userId: currentUser?.id || 0
       });
     } else {
-      // Create mode - empty form
+      // Create mode - empty form, default to current user or admin
       setFormData({
         title: '',
         description: '',
         totalMinutes: 0,
-        status: 'todo'
+        status: 'todo',
+        userId: currentUser?.id || 0
       });
     }
     
     setErrors({});
-  }, [isOpen, mode, task, aiSuggestion]);
+  }, [isOpen, mode, task, aiSuggestion, currentUser?.id]);
+
+  // Fetch available users for admin user assignment
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!isOpen || !currentUser?.isAdmin) return;
+      
+      setLoadingUsers(true);
+      try {
+        const response = await userApi.getAllUsers();
+        if (response.success && response.data) {
+          setAvailableUsers(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, [isOpen, currentUser?.isAdmin]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -90,7 +120,8 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
         title: formData.title.trim(),
         description: formData.description.trim(),
         totalMinutes: formData.totalMinutes,
-        status: formData.status
+        status: formData.status,
+        userId: formData.userId
       });
       onClose();
     } catch (error) {
@@ -211,6 +242,37 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
             />
             {errors.totalMinutes && <p className="text-red-500 text-sm mt-1">{errors.totalMinutes}</p>}
           </div>
+
+          {/* User Assignment (only show for admin users) */}
+          {currentUser?.isAdmin && (
+            <div>
+              <label htmlFor="userId" className="block text-sm font-medium text-gray-700 mb-2">
+                Assign to User
+              </label>
+              {loadingUsers ? (
+                <div className="w-full p-3 border border-gray-300 rounded-md bg-gray-50 text-gray-500">
+                  Loading users...
+                </div>
+              ) : (
+                <select
+                  id="userId"
+                  value={formData.userId}
+                  onChange={(e) => setFormData({ ...formData, userId: parseInt(e.target.value) })}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isSubmitting}
+                >
+                  {availableUsers.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.username} {user.isAdmin ? '(Admin)' : ''} {user.skills ? `- ${user.skills}` : ''}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <p className="text-sm text-gray-500 mt-1">
+                Select which user this task should be assigned to
+              </p>
+            </div>
+          )}
 
           {/* Status (only show for edit mode) */}
           {mode === 'edit' && (

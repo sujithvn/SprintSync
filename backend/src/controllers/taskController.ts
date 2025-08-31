@@ -147,9 +147,33 @@ export class TaskController {
         });
       }
 
+      // If admin is creating a task, include username in response
+      let responseData = newTask[0];
+      if (req.user?.isAdmin) {
+        const taskWithUser = await db
+          .select({
+            id: tasks.id,
+            title: tasks.title,
+            description: tasks.description,
+            status: tasks.status,
+            totalMinutes: tasks.totalMinutes,
+            userId: tasks.userId,
+            createdAt: tasks.createdAt,
+            updatedAt: tasks.updatedAt,
+            username: users.username,
+          })
+          .from(tasks)
+          .leftJoin(users, eq(tasks.userId, users.id))
+          .where(eq(tasks.id, newTask[0].id));
+        
+        if (taskWithUser[0]) {
+          responseData = taskWithUser[0];
+        }
+      }
+
       return res.status(201).json({
         success: true,
-        data: newTask[0],
+        data: responseData,
       });
     } catch (error) {
       Logger.error({
@@ -244,10 +268,10 @@ export class TaskController {
         });
       }
 
-      const { title, description, status, totalMinutes } = req.body;
+      const { title, description, status, totalMinutes, userId } = req.body;
 
       // Check if there's anything to update
-      if (!title && !description && !status && totalMinutes === undefined) {
+      if (!title && !description && !status && totalMinutes === undefined && userId === undefined) {
         return res.status(400).json({ 
           success: false,
           error: 'No fields to update' 
@@ -286,6 +310,19 @@ export class TaskController {
       }
       if (totalMinutes !== undefined) updateData.totalMinutes = totalMinutes;
 
+      // Handle user assignment (admin only)
+      if (userId !== undefined && req.user?.isAdmin) {
+        // Verify the assigned user exists
+        const userExists = await db.select().from(users).where(eq(users.id, userId));
+        if (userExists.length === 0) {
+          return res.status(400).json({ 
+            success: false,
+            error: 'Assigned user does not exist' 
+          });
+        }
+        updateData.userId = userId;
+      }
+
       const updatedTask = await db.update(tasks)
         .set(updateData)
         .where(eq(tasks.id, taskId))
@@ -298,9 +335,33 @@ export class TaskController {
         });
       }
 
+      // If admin is updating a task, include username in response
+      let responseData = updatedTask[0];
+      if (req.user?.isAdmin) {
+        const taskWithUser = await db
+          .select({
+            id: tasks.id,
+            title: tasks.title,
+            description: tasks.description,
+            status: tasks.status,
+            totalMinutes: tasks.totalMinutes,
+            userId: tasks.userId,
+            createdAt: tasks.createdAt,
+            updatedAt: tasks.updatedAt,
+            username: users.username,
+          })
+          .from(tasks)
+          .leftJoin(users, eq(tasks.userId, users.id))
+          .where(eq(tasks.id, updatedTask[0].id));
+        
+        if (taskWithUser[0]) {
+          responseData = taskWithUser[0];
+        }
+      }
+
       return res.json({
         success: true,
-        data: updatedTask[0]
+        data: responseData
       });
     } catch (error) {
       console.error('Error updating task:', error);

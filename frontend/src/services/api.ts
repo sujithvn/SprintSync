@@ -153,4 +153,12 @@ export const statsApi = {
   },
 };
 
+// User endpoints
+export const userApi = {
+  getAllUsers: async (): Promise<ApiResponse<User[]>> => {
+    const response = await api.get('/api/users');
+    return response.data;
+  },
+};
+
 export default api;

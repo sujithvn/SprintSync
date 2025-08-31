@@ -27,5 +27,5 @@ Documentation,"Write README with setup, tech choices, and live URL (incremental)
 Demo,Populate demo data and prepare system for review,1,1.5,,
 Stretch,top-users endpoint,1,2,0.5,mostly done with AI
 Stretch,Admin Dashboard to list top-users,1,2,0.5,mostly done with AI
-Stretch,Admin assign tasks to users,1,2,,
+Stretch,Admin assign tasks to users,1,2,0.5,mostly done with AI
 Stretch,Auto-assign tasks to users based on resume and task description,2,4,,

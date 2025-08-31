@@ -11,6 +11,7 @@ export class UserController {
         id: users.id,
         username: users.username,
         isAdmin: users.isAdmin,
+        skills: users.skills,
         createdAt: users.createdAt
       }).from(users);
 
