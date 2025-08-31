@@ -27,6 +27,9 @@ const router = express.Router();
  *           type: string
  *         password:
  *           type: string
+ *         skills:
+ *           type: string
+ *           description: User's skills for task assignment (optional)
  *         isAdmin:
  *           type: boolean
  *           default: false

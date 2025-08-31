@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check for success message from registration
+    const state = location.state as { message?: string };
+    if (state?.message) {
+      setSuccessMessage(state.message);
+      // Clear the state to prevent showing the message again on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +41,11 @@ const Login: React.FC = () => {
     <div className="flex justify-center items-center min-h-[80vh]">
       <div className="bg-white p-10 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-center mb-8 text-gray-800 text-2xl font-semibold">Login to SprintSync</h2>
+        {successMessage && (
+          <div className="bg-green-50 text-green-700 p-3 rounded-md mb-5 text-center">
+            {successMessage}
+          </div>
+        )}
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-md mb-5 text-center">
             {error}
@@ -71,6 +88,17 @@ const Login: React.FC = () => {
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <Link 
+              to="/register" 
+              className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
+            >
+              Sign up here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

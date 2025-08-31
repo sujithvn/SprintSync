@@ -19,9 +19,24 @@ async function seed() {
       
       // Insert users only if none exist
       insertedUsers = await db.insert(users).values([
-        { username: 'admin', password: adminPassword, isAdmin: true },
-        { username: 'developer', password: developerPassword, isAdmin: false },
-        { username: 'designer', password: designerPassword, isAdmin: false },
+        { 
+          username: 'admin', 
+          password: adminPassword, 
+          isAdmin: true,
+          skills: 'Project Management, Team Leadership, Strategic Planning' 
+        },
+        { 
+          username: 'developer', 
+          password: developerPassword, 
+          isAdmin: false,
+          skills: 'JavaScript, TypeScript, React, Node.js, Python, SQL' 
+        },
+        { 
+          username: 'designer', 
+          password: designerPassword, 
+          isAdmin: false,
+          skills: 'UI/UX Design, Figma, Adobe Creative Suite, Prototyping' 
+        },
       ]).returning();
       console.log('✅ Users seeded:', insertedUsers.length);
       console.log('ℹ️  Default passwords: admin123, dev123, design123');

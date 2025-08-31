@@ -15,6 +15,13 @@
       "when": 1756376783133,
       "tag": "0001_greedy_doctor_doom",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756664072351,
+      "tag": "0002_mighty_mister_sinister",
+      "breakpoints": true
     }
   ]
 }

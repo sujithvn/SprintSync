@@ -10,6 +10,7 @@ export const users = pgTable('users', {
   username: varchar('username', { length: 50 }).notNull().unique(),
   password: varchar('password', { length: 255 }).notNull(),
   isAdmin: boolean('is_admin').default(false).notNull(),
+  skills: text('skills'), // User's skills for task assignment
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

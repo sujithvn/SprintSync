@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Header from '@/components/Header';
 import TaskList from '@/pages/TaskList';
 import Login from '@/pages/Login';
+import Register from '@/pages/Register';
 import AdminDashboard from '@/pages/AdminDashboard';
 import { AuthProvider, useAuth } from '@/components/AuthContext';
 
@@ -55,6 +56,7 @@ const App: React.FC = () => {
           <main className="flex-1 p-5 max-w-7xl mx-auto w-full">
             <Routes>
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route
                 path="/tasks"
                 element={

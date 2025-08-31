@@ -66,8 +66,8 @@ export const authApi = {
     };
   },
 
-  register: async (username: string, password: string): Promise<ApiResponse<User>> => {
-    const response = await api.post('/api/auth/register', { username, password });
+  register: async (username: string, password: string, skills?: string): Promise<ApiResponse<User>> => {
+    const response = await api.post('/api/auth/register', { username, password, skills });
     const registerData: ApiResponse<AuthLoginResponse> = response.data;
     
     if (registerData.success && registerData.data?.token) {

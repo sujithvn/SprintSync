@@ -8,7 +8,7 @@ import { generateToken } from '../utils/jwt';
 export class AuthController {
   static async register(req: Request, res: Response) {
     try {
-      const { username, password, isAdmin = false } = req.body;
+      const { username, password, skills, isAdmin = false } = req.body;
 
       if (!username || !password) {
         return res.status(400).json({ 
@@ -34,11 +34,13 @@ export class AuthController {
       const newUser = await db.insert(users).values({
         username,
         password: hashedPassword,
+        skills: skills || null,
         isAdmin,
       }).returning({
         id: users.id,
         username: users.username,
         isAdmin: users.isAdmin, // not recommended to send back this field
+        skills: users.skills,
         createdAt: users.createdAt
       });
 
@@ -63,7 +65,8 @@ export class AuthController {
           user: {
             id: newUser[0].id,
             username: newUser[0].username,
-            isAdmin: newUser[0].isAdmin
+            isAdmin: newUser[0].isAdmin,
+            skills: newUser[0].skills
           }
         }
       });
