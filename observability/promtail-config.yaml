@@ -1,0 +1,84 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker-containers
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: containerlogs
+          __path__: /var/lib/docker/containers/*/*-json.log
+
+    pipeline_stages:
+      # Parse Docker JSON log format
+      - json:
+          expressions:
+            log: log
+            stream: stream
+            time: time
+            attrs: attrs
+      
+      # Extract container information from the log file path
+      - regex:
+          source: filename
+          expression: '/var/lib/docker/containers/(?P<container_id>[^/]+)/[^/]+-json\.log'
+      
+      # Add container_id as a label
+      - labels:
+          container_id:
+      
+      # Map container IDs to service names (update these IDs as needed)
+      - match:
+          selector: '{container_id="fa7349426d60fb3a21992bcbafb5712fa59cba3156f4f49eccd29d2a6ba3bc4b"}'
+          stages:
+          - static_labels:
+              service: sprintsync-backend
+              container_name: sprintsync-backend
+      
+      - match:
+          selector: '{container_id=~".*sprintsync.*"}'
+          stages:
+          - static_labels:
+              service: sprintsync
+      
+      # For SprintSync backend, try to parse JSON structure from the log content
+      - match:
+          selector: '{service="sprintsync-backend"}'
+          stages:
+          - json:
+              source: log
+              expressions:
+                level: level
+                method: method
+                path: path
+                latency: latency
+                statusCode: statusCode
+                userId: userId
+                userName: userName
+                service_name: service
+                environment: environment
+          - labels:
+              level:
+              method:
+              path:
+              userId:
+              statusCode:
+              service_name:
+              environment:
+      
+      # Use the time from Docker log
+      - timestamp:
+          source: time
+          format: RFC3339Nano
+      
+      # Output the original log message
+      - output:
+          source: log

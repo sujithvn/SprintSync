@@ -1,0 +1,57 @@
+server:
+  http_listen_port: 3101
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions-http.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # HTTP endpoint for receiving logs directly from App Runner
+  - job_name: http-receiver
+    loki_push_api:
+      server:
+        http_listen_port: 3101
+        grpc_listen_port: 0
+    
+    relabel_configs:
+      - replacement: sprintsync-backend-direct
+        target_label: service
+      - replacement: production
+        target_label: environment
+
+    pipeline_stages:
+      # Parse JSON logs from our Logger class
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            method: method
+            path: path
+            latency: latency
+            statusCode: statusCode
+            userId: userId
+            userName: userName
+            service_name: service
+            environment: environment
+            message: message
+      
+      # Add parsed fields as labels
+      - labels:
+          level:
+          method:
+          path:
+          userId:
+          statusCode:
+          service_name:
+          environment:
+      
+      # Use timestamp from log
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+          fallback_formats:
+            - "2006-01-02T15:04:05.000Z"
+            - "2006-01-02T15:04:05Z"

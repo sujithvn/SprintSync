@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Monitor the AWS App Runner backend (if it exposes metrics)
+  - job_name: 'sprintsync-backend-aws'
+    static_configs:
+      - targets: ['YOUR_APP_RUNNER_URL:YOUR_METRICS_PORT']  # Update with your App Runner URL
+    metrics_path: /metrics  # Update if your metrics endpoint is different
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    scheme: https  # Use https for App Runner
+    
+  # Monitor the observability stack itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']

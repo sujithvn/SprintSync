@@ -1,0 +1,76 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # CloudWatch logs scraping for AWS App Runner
+  - job_name: aws-apprunner-logs
+    cloudwatch:
+      region: us-east-1  # Update to your AWS region
+      log_group_name: /aws/apprunner/sprintsync-backend/application  # Update to your App Runner log group
+      
+    relabel_configs:
+      - source_labels: [__aws_cloudwatch_log_group]
+        target_label: log_group
+      - source_labels: [__aws_cloudwatch_log_stream]
+        target_label: log_stream
+      - replacement: sprintsync-backend-aws
+        target_label: service
+      - replacement: production
+        target_label: environment
+
+    pipeline_stages:
+      # Try to parse JSON logs from our Logger class
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            method: method
+            path: path
+            latency: latency
+            statusCode: statusCode
+            userId: userId
+            userName: userName
+            service_name: service
+            environment: environment
+            message: message
+      
+      # Add parsed fields as labels if they exist
+      - labels:
+          level:
+          method:
+          path:
+          userId:
+          statusCode:
+          service_name:
+          environment:
+      
+      # Use timestamp from log if available, otherwise use CloudWatch timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+          fallback_formats:
+            - "2006-01-02T15:04:05.000Z"
+            - "2006-01-02T15:04:05Z"
+      
+      # Output the message or full log if no message field
+      - template:
+          source: output
+          template: |
+            {{ if .message }}{{ .message }}{{ else }}{{ . }}{{ end }}
+
+  # Alternative: Direct log streaming endpoint
+  - job_name: http-logs
+    webhook:
+      webhook_url: http://0.0.0.0:3101/loki/api/v1/push
+    relabel_configs:
+      - replacement: sprintsync-backend-http
+        target_label: service
+      - replacement: production
+        target_label: environment
