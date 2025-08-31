@@ -98,7 +98,7 @@ export class OpenAIService {
 
 Available Users for Assignment:
 ${availableUsers.map(user => 
-  `- ${user.name} (ID: ${user.id}): Skills: ${user.skills || 'No skills specified'}`
+  `- ${user.username} (ID: ${user.id}): Skills: ${user.skills || 'No skills specified'}`
 ).join('\n')}`;
     }
     
@@ -109,7 +109,7 @@ ${availableUsers.map(user =>
   "suggestedTags": ["tag1", "tag2", "tag3"],
   "confidence": 0.85,
   "recommendedUserId": 123,
-  "recommendedUser": "John Doe",
+  "recommendedUser": "actual_username_from_available_users_list",
   "matchingReason": "Has experience with React and JavaScript which matches this frontend task"
 }` : `
 {
@@ -130,11 +130,13 @@ Guidelines:
 - estimatedMinutes: Realistic time estimate in minutes (15-480 range typical)
 - suggestedTags: 2-4 relevant tags for categorization (lowercase, hyphenated)
 - confidence: Your confidence in the suggestion (0.0-1.0, where 1.0 is highest confidence)${availableUsers && availableUsers.length > 0 ? `
-- recommendedUserId: ID of the most suitable user for this task (must be from the available users list)
-- recommendedUser: Name of the recommended user
-- matchingReason: Brief explanation of why this user is the best match for the task` : ''}
+- recommendedUserId: ID of the most suitable user for this task (MUST be exactly one of the user IDs from the available users list above)
+- recommendedUser: Username of the recommended user (MUST be exactly one of the usernames from the available users list above)
+- matchingReason: Brief explanation of why this user is the best match for the task based on their listed skills` : ''}
 
-Consider the type of task (bug fix, feature, refactoring, testing, documentation, etc.) and provide appropriate guidance.${availableUsers && availableUsers.length > 0 ? ' When recommending a user, match their skills and experience to the task requirements.' : ''}
+IMPORTANT: ${availableUsers && availableUsers.length > 0 ? 'You MUST only recommend users from the "Available Users for Assignment" list above. Do not create fictional users like "John Doe". Use the exact usernames and IDs provided.' : 'Focus on providing accurate task analysis.'}
+
+Consider the type of task (bug fix, feature, refactoring, testing, documentation, etc.) and provide appropriate guidance.${availableUsers && availableUsers.length > 0 ? ' When recommending a user, carefully match their listed skills to the task requirements.' : ''}
     `.trim();
   }
 
