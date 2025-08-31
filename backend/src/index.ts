@@ -1,12 +1,22 @@
 import app from './server';
+import { loadSecrets } from './config/secrets';
 
-const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, (error) => {
-  if (error) {
-    console.error(`Error starting server: ${error}`);
-  } else {
-    console.log(`Server listening on port ${PORT}`);
-    console.log('Swagger docs available at http://localhost:3000/api-docs');
+async function startServer() {
+  try {
+    // Load secrets in production
+    if (process.env.NODE_ENV === 'production') {
+      await loadSecrets();
+    }
+    
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on PORT ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
   }
-});
+}
+
+startServer();

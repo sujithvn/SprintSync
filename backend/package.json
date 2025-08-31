@@ -19,6 +19,7 @@
   "license": "ISC",
   "description": "SprintSync - Task management with AI assistance. See PROJECT_CONTEXT.md in root folder for context.",
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.879.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",

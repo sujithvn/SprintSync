@@ -7,7 +7,7 @@ import authRouter from './routes/auth';
 import usersRouter from './routes/users';
 import tasksRouter from './routes/tasks';
 import aiRouter from './routes/ai';
-import { requestLoggingMiddleware, errorLoggingMiddleware, Logger } from './middlewares/logging';
+import { requestLoggingMiddleware, errorLoggingMiddleware } from './middlewares/logging';
 
 dotenv.config();
 
@@ -38,12 +38,23 @@ const swaggerOptions = {
   apis: ['./src/routes/*.ts', './src/models/*.ts'], // Files containing Swagger annotations
 };
 
+if (process.env.NODE_ENV === 'production') {
+  // Secrets will be loaded asynchronously in production
+  console.log('Production mode: Will load secrets from Parameter Store');
+} else {
+  console.log('Development mode: Using local environment variables');
+}
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 
 // CORS configuration
+
+const allowedOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',')
+  : ['http://localhost:3300', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: ['http://localhost:3300', 'http://localhost:3000'], // Allow frontend and local dev
+  origin: allowedOrigins,
   credentials: true, // Allow cookies and credentials
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
