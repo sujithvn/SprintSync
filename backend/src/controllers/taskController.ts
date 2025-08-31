@@ -8,8 +8,21 @@ export class TaskController {
   static async getAllTasks(req: Request, res: Response) {
     try {
       if (req.user?.isAdmin) {
-        // Admin can see all tasks
-        const allTasks = await db.select().from(tasks);
+        // Admin can see all tasks with user information
+        const allTasks = await db
+          .select({
+            id: tasks.id,
+            title: tasks.title,
+            description: tasks.description,
+            status: tasks.status,
+            totalMinutes: tasks.totalMinutes,
+            userId: tasks.userId,
+            createdAt: tasks.createdAt,
+            updatedAt: tasks.updatedAt,
+            username: users.username,
+          })
+          .from(tasks)
+          .leftJoin(users, eq(tasks.userId, users.id));
         return res.json({
           success: true,
           data: allTasks,

@@ -185,7 +185,14 @@ const TaskList: React.FC = () => {
           tasks.map(task => (
             <div key={task.id} className="flex flex-col lg:flex-row lg:justify-between lg:items-start p-4 border border-gray-200 rounded-lg gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">{task.title}</h3>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
+                  {task.username && (
+                    <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                      {task.username}
+                    </span>
+                  )}
+                </div>
                 <p className="text-gray-600 mb-3 leading-relaxed">{task.description}</p>
                 <div className="flex gap-3 text-sm text-gray-500">
                   <span>{task.totalMinutes} minutes</span>

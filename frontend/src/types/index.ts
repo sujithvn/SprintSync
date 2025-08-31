@@ -16,6 +16,7 @@ export interface Task {
   status: 'todo' | 'in_progress' | 'done';
   totalMinutes: number;
   userId?: number;
+  username?: string; // Only available for admin users
   createdAt: string;
   updatedAt: string;
 }
