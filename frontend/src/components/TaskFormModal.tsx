@@ -48,12 +48,16 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
       });
     } else if (mode === 'ai-assisted' && aiSuggestion) {
       // AI-assisted mode - populate with AI suggestion
+      const recommendedUserId = aiSuggestion.recommendedUserId && currentUser?.isAdmin 
+        ? aiSuggestion.recommendedUserId 
+        : currentUser?.id || 0;
+        
       setFormData({
         title: aiSuggestion.originalTitle || '',
         description: aiSuggestion.suggestedDescription || '',
         totalMinutes: Number(aiSuggestion.estimatedMinutes) || 0,
         status: 'todo',
-        userId: currentUser?.id || 0
+        userId: recommendedUserId
       });
     } else {
       // Create mode - empty form, default to current user or admin
@@ -174,12 +178,23 @@ const TaskFormModal: React.FC<TaskFormModalProps> = ({
         {/* AI Suggestion Notice */}
         {mode === 'ai-assisted' && (
           <div className="p-4 bg-purple-50 border-b">
-            <div className="flex items-center gap-2 text-purple-700">
+            <div className="flex items-center gap-2 text-purple-700 mb-2">
               <span>🤖</span>
               <span className="text-sm font-medium">
                 This task was created from an AI suggestion. You can modify any details before saving.
               </span>
             </div>
+            {aiSuggestion?.recommendedUser && currentUser?.isAdmin && (
+              <div className="flex items-center gap-2 text-purple-600 text-sm">
+                <span>👤</span>
+                <span>
+                  AI recommended <strong>{aiSuggestion.recommendedUser}</strong> for this task
+                  {aiSuggestion.matchingReason && (
+                    <span className="text-purple-500"> - {aiSuggestion.matchingReason}</span>
+                  )}
+                </span>
+              </div>
+            )}
           </div>
         )}
 

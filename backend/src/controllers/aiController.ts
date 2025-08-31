@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { OpenAIService } from '../services/openaiService';
+import { db } from '../db';
+import { users } from '../models/schema';
 
 interface AiSuggestRequest {
   title: string;
@@ -21,7 +23,25 @@ export class AiController {
         });
       }
 
-      const suggestion = await OpenAIService.generateTaskSuggestion(title.trim(), context?.trim());
+      // Fetch all users with their skills for user recommendation
+      let availableUsers: any[] = [];
+      try {
+        availableUsers = await db.select({
+          id: users.id,
+          username: users.username,
+          skills: users.skills,
+          isAdmin: users.isAdmin
+        }).from(users);
+      } catch (error) {
+        console.warn('Could not fetch users for recommendation:', error);
+        // Continue without user recommendation if database query fails
+      }
+
+      const suggestion = await OpenAIService.generateTaskSuggestion(
+        title.trim(), 
+        context?.trim(),
+        availableUsers
+      );
 
       return res.json({
         success: true,

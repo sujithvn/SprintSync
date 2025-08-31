@@ -32,6 +32,10 @@ export interface AiSuggestResponse {
   estimatedMinutes: number;
   suggestedTags?: string[];
   confidence: number; // 0-1 scale
+  // User recommendation fields
+  recommendedUserId?: number;
+  recommendedUser?: string;
+  matchingReason?: string;
 }
 
 export interface AuthContextType {

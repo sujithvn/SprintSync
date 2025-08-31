@@ -174,6 +174,29 @@ const AiSuggest: React.FC<AiSuggestProps> = ({ onSuggestionAccepted, initialTitl
               )}
             </div>
 
+            {/* User Recommendation Section */}
+            {suggestion.recommendedUser && (
+              <div className="bg-white p-3 rounded border border-purple-300">
+                <h5 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
+                  <span>👤</span>
+                  Recommended Assignee:
+                </h5>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="font-medium text-purple-700">{suggestion.recommendedUser}</span>
+                    {suggestion.matchingReason && (
+                      <p className="text-xs text-gray-600 mt-1">
+                        💡 {suggestion.matchingReason}
+                      </p>
+                    )}
+                  </div>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                    AI Suggested
+                  </span>
+                </div>
+              </div>
+            )}
+
             {onSuggestionAccepted && (
               <div className="mt-3 space-y-2">
                 <button
